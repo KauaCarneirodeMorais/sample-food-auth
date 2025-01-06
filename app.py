@@ -42,6 +42,39 @@ def create_food():
         db.session.rollback()  # Reverter alterações em caso de erro
         return jsonify({"message": "Erro ao registrar a refeição", "error": str(e)}), 500
 
+@app.route("/food/<int:id>", methods=["GET"])
+def read_food(id):
+    food = Foods.query.get(id)
+
+    if food:
+        return jsonify({
+            "name": food.name,
+            "description": food.description,
+            "date": food.date,
+            "hour": food.hour,
+            "diet": food.diet,
+        }), 200
+
+    return jsonify({"message": "Registro não encontrado"}), 404
+
+@app.route("/food/<int:id>", methods=["PUT"])
+def update_food(id):
+    data = request.json
+    food = Foods.query.get(id)
+
+    if food and data.get("name") or data.get("description") or data.get("date") or data.get("hour") or data.get("diet"):
+        food.name = data.get("name")
+        food.description = data.get("description")
+        food.date = data.get("date")
+        food.hour = data.get("hour") 
+        food.diet = data.get("diet") 
+        db.session.commit()
+
+        return jsonify({"message": f"A refeição {id} atualizada com sucesso"})
+
+    return jsonify({"message": "Registro não encontrado"}), 404
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
