@@ -4,7 +4,7 @@ from database import db
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "your_secret_key"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///foods.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://cmkau:admin123@127.0.0.1:3306/sample_food_auth'
 
 db.init_app(app)
 
