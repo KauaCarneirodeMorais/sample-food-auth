@@ -74,7 +74,30 @@ def update_food(id):
 
     return jsonify({"message": "Registro não encontrado"}), 404
 
+@app.route("/food/<int:id>", methods=["DELETE"])
+def delete_food(id):
+    food = Foods.query.get(id)
 
+    if food:
+        db.session.delete(food)
+        db.session.commit()
+        return jsonify({"message": f"Comida {id} deletado com sucesso"})
+
+    return jsonify({"message": "Registro não encontrado"}), 404
+
+@app.route("/foods", methods=["GET"])
+def list_food():
+    
+    try:
+        foods = Foods.query.all()  # Consulta ao banco
+        if not foods:
+            return jsonify({"message": "Nenhuma refeição encontrada."}), 200
+        
+        foods_list = [food.to_dict() for food in foods]
+        return jsonify(foods_list), 200
+
+    except Exception as e:
+        return jsonify({"message": "Erro ao listar as refeições", "error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
